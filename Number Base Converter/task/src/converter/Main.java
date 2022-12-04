@@ -21,5 +21,6 @@ public class Main {
     public static String InputStr() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         return reader.readLine();
+
     }
 }
