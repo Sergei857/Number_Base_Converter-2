@@ -121,13 +121,44 @@ public class Main {
         return out_str.reverse().toString();
     }
 
-    public static String BinToDecimal(String str){
-
-
-
-
+    public static String BinToDecimal(String str) {
+        Integer dec_out = 0, i = 1;
+        for (Character ch : new StringBuilder(str).reverse().toString().toCharArray()) {
+            dec_out = dec_out + Integer.parseInt(ch.toString()) * i;
+            i = i * 2;
+        }
+        return dec_out.toString();
     }
 
+    public static String V8ToDecimal(String str) {
+        Integer dec_out = 0, i = 1;
+        for (Character ch : new StringBuilder(str).reverse().toString().toCharArray()) {
+            dec_out = dec_out + Integer.parseInt(ch.toString()) * i;
+            i = i * 8;
+        }
+        return dec_out.toString();
+    }
+
+    public static String S16ToDecimal(String str) {
+        Integer dec_out = 0, i = 1, temp = 0;
+        for (Character ch : new StringBuilder(str).reverse().toString().toCharArray()) {
+            if (Character.isDigit(ch)) {
+                temp = Integer.parseInt(ch.toString());
+            } else {
+                switch (Character.toUpperCase(ch)) {
+                    case 'A' -> temp = 10;
+                    case 'B' -> temp = 11;
+                    case 'C' -> temp = 12;
+                    case 'D' -> temp = 13;
+                    case 'E' -> temp = 14;
+                    case 'F' -> temp = 15;
+                }
+            }
+            dec_out = dec_out + temp * i;
+            i = i * 16;
+        }
+        return dec_out.toString();
+    }
 }
 
 
