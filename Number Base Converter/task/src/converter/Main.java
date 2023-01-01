@@ -6,10 +6,9 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 
 public class Main {
-    static String CHARE_BASE = "0123456789abcdefghijklmnopqrstuvwxyz";
+    static StringBuilder CHARE_BASE = new StringBuilder("0123456789abcdefghijklmnopqrstuvwxyz");
 
     public static void main(String[] args) throws IOException {
-
         while (true) {
             System.out.print("Enter two numbers in format: {source base} {target base} (To quit type /exit) ");
             String type_to = InputStr();
@@ -22,8 +21,7 @@ public class Main {
                 type_to = InputStr();
                 if (type_to.equals("/back")) break;
                 String num_in_str = new String(type_to);
-                System.out.println("Conversion result: TO 10  -> " + ToDecimal(num_in_str, source_base));
-                System.out.println("Conversion result: TO Base-> " + ToBase(ToDecimal(num_in_str, source_base), target_base));
+                System.out.println("Conversion result: " + ToBase(ToDecimal(num_in_str, source_base), target_base));
             }
         }
     }
@@ -32,30 +30,28 @@ public class Main {
         BigInteger dec_out = BigInteger.ZERO;
         int i = 0;
         for (Character ch : new StringBuilder(num_in_str).reverse().toString().toCharArray()) {
-            dec_out = dec_out.add(BigInteger.valueOf(CHARE_BASE.indexOf(ch)).multiply(new BigInteger(String.valueOf(source_base)).pow(i)));
+            dec_out = dec_out.add(BigInteger.valueOf(CHARE_BASE.toString().indexOf(ch)).multiply(new BigInteger(String.valueOf(source_base)).pow(i)));
             i++;
         }
         return dec_out.toString();
     }
 
     public static String ToBase(String num_in_str, int target_base) {
-        BigInteger dec_out = BigInteger.ZERO;
-        Integer i = 0;
-        BigInteger raz = BigInteger.ONE;
-        for (Character ch : new StringBuilder(num_in_str).reverse().toString().toCharArray()) {
-            raz = BigInteger.valueOf(CHARE_BASE.indexOf(ch));
-            dec_out = dec_out.add(raz.multiply(new BigInteger(String.valueOf((int) Math.pow(target_base, i)))));
-            i++;
+        BigInteger dec_in = new BigInteger(num_in_str);
+        StringBuilder base_out = new StringBuilder("");
+        BigInteger ostatok;
+        while (dec_in.compareTo(BigInteger.ZERO) > 0) {
+            ostatok = dec_in.mod(BigInteger.valueOf(target_base));
+            dec_in = dec_in.subtract(ostatok).divide(BigInteger.valueOf(target_base));
+            base_out.append(CHARE_BASE.charAt(ostatok.intValue()));
         }
-        return dec_out.toString();
+        return base_out.reverse().toString();
     }
 
     public static String InputStr() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         return reader.readLine();
     }
-
-
 }
 
 
