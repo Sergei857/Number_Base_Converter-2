@@ -3,49 +3,53 @@ package converter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 
 public class Main {
+
+    static String CHARE_BASE = "0123456789abcdefghijklmnopqrstuvwxyz";
 
     public static void main(String[] args) throws IOException {
 
         while (true) {
-            String out = "";
-            System.out.print("Do you want to convert /from decimal or /to decimal? (To quit type /exit) ");
+            System.out.print("Enter two numbers in format: {source base} {target base} (To quit type /exit) ");
             String type_to = InputStr();
             if (type_to.equals("/exit")) break;
-            switch (type_to) {
-                case "/from" -> {
-                    System.out.print("Enter number in decimal system: ");
-                    int decimal_input = Integer.parseInt(InputStr());
-                    System.out.print("Enter target base: ");
-                    int target_sys_input = Integer.parseInt(InputStr());
-                    switch (target_sys_input) {
-                        case 2 -> System.out.println("Conversion result: " + DecimalTo2(decimal_input));
-                        case 8 -> System.out.println("Conversion result: " + DecimalTo8(decimal_input));
-                        case 16 -> System.out.println("Conversion result: " + DecimalTo16(decimal_input));
-                    }
-                }
-                case "/to" -> {
-                    System.out.print("Enter source number: ");
-                    String sourse_input = InputStr();
-                    System.out.print("Enter source base: ");
-                    int target_sys_input = Integer.parseInt(InputStr());
-                    switch (target_sys_input) {
-                        case 2 -> System.out.println("Conversion to decimal result: " + BinToDecimal(sourse_input));
-                        case 8 -> System.out.println("Conversion to decimal result: " + V8ToDecimal(sourse_input));
-                        case 16 -> System.out.println("Conversion to decimal result: " + S16ToDecimal(sourse_input));
-                    }
-                }
+            int source_base = Integer.parseInt(type_to.split("\\s+")[0]), target_base = Integer.parseInt(type_to.split("\\s+")[1]);
+            System.out.println(source_base + " " + target_base);
+            while (true) {
+                System.out.print("Enter number in base %d  to convert to base %d (To go back type /back) "
+                        .formatted(source_base, target_base));
+                type_to = InputStr();
+                if (type_to.equals("/back")) break;
+                String num_in_str = new String(type_to);
+                System.out.println("Conversion result: " + num_in_str);
             }
         }
     }
 
-
-    public static String InputStr() throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        return reader.readLine();
-
+    public static String ToDecimal(String num_in_str, int source_base) {
+        BigInteger dec_out = BigInteger.ZERO;
+        Integer i = 1, temp = 0;
+        for (Character ch : new StringBuilder(num_in_str).reverse().toString().toCharArray()) {
+            if (Character.isDigit(ch)) {
+                temp = Integer.parseInt(ch.toString());
+            } else {
+                switch (Character.toUpperCase(ch)) {
+                    case 'A' -> temp = 10;
+                    case 'B' -> temp = 11;
+                    case 'C' -> temp = 12;
+                    case 'D' -> temp = 13;
+                    case 'E' -> temp = 14;
+                    case 'F' -> temp = 15;
+                }
+            }
+            dec_out = dec_out + temp * i;
+            i = i * 16;
+        }
+        return dec_out.toString();
     }
+
 
     public static String DecimalTo2(int dec) {
         Integer remainder, quotient;
@@ -121,6 +125,7 @@ public class Main {
         return out_str.reverse().toString();
     }
 
+
     public static String BinToDecimal(String str) {
         Integer dec_out = 0, i = 1;
         for (Character ch : new StringBuilder(str).reverse().toString().toCharArray()) {
@@ -159,7 +164,12 @@ public class Main {
         }
         return dec_out.toString();
     }
-}
 
+
+    public static String InputStr() throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        return reader.readLine();
+    }
+}
 
 
