@@ -18,11 +18,35 @@ public class Main {
                         .formatted(source_base, target_base));
                 type_to = scanner.nextLine();
                 if (type_to.equals("/back")) break;
-                String num_in_str = new String(type_to);
-                System.out.println("Conversion result: " + ToBase(ToDecimal(num_in_str, source_base), target_base));
+                StringBuilder num_in_str = new StringBuilder(type_to);
+
+                if (num_in_str.indexOf(".") == -1) {
+                    System.out.println("Conversion result: " + ToBase(ToDecimal(num_in_str.toString(), source_base), target_base));
+                } else {
+                    StringBuilder drobnay = new StringBuilder(num_in_str.substring(num_in_str.indexOf(".")+1, num_in_str.length()));
+                    System.out.println(drobnay);
+
+
+
+
+                }
             }
         }
     }
+    public static String ToDecimalDrob(String num_in_str, int source_base) {
+        BigInteger dec_out = BigInteger.ZERO;
+        int i = 0;
+        for (Character ch : new StringBuilder(num_in_str).reverse().toString().toCharArray()) {
+            dec_out = dec_out.add(BigInteger.valueOf(CHARE_BASE.toString().indexOf(ch)).multiply
+                    (new BigInteger(String.valueOf(source_base)).pow(i)));
+            i++;
+        }
+        return dec_out.toString();
+    }
+
+
+
+
 
     public static String ToDecimal(String num_in_str, int source_base) {
         BigInteger dec_out = BigInteger.ZERO;
