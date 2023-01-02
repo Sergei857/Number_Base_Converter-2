@@ -1,6 +1,8 @@
 package converter;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Scanner;
 
 public class Main {
@@ -23,29 +25,43 @@ public class Main {
                 if (num_in_str.indexOf(".") == -1) {
                     System.out.println("Conversion result: " + ToBase(ToDecimal(num_in_str.toString(), source_base), target_base));
                 } else {
-                    StringBuilder drobnay = new StringBuilder(num_in_str.substring(num_in_str.indexOf(".")+1, num_in_str.length()));
+                    StringBuilder celay = new StringBuilder(num_in_str.substring(0, num_in_str.indexOf(".")));
+                    System.out.println(celay);
+                    StringBuilder drobnay = new StringBuilder(num_in_str.substring(num_in_str.indexOf(".") + 1, num_in_str.length()));
                     System.out.println(drobnay);
-
-
+                    System.out.println("Conversion result: CELAY   -> " + ToBase(ToDecimal(celay.toString(), source_base), target_base));
+                    System.out.println("Conversion result: DROBNAY-DEC -> " + ToDecimalDrob(drobnay.toString(), source_base));
+                    System.out.println("Conversion result: DROBNAY-BAS -> " + ToBaseDrob(ToDecimalDrob(drobnay.toString(), source_base), target_base));
 
 
                 }
             }
         }
     }
-    public static String ToDecimalDrob(String num_in_str, int source_base) {
-        BigInteger dec_out = BigInteger.ZERO;
-        int i = 0;
-        for (Character ch : new StringBuilder(num_in_str).reverse().toString().toCharArray()) {
-            dec_out = dec_out.add(BigInteger.valueOf(CHARE_BASE.toString().indexOf(ch)).multiply
-                    (new BigInteger(String.valueOf(source_base)).pow(i)));
-            i++;
+
+    public static String ToBaseDrob(String num_in_str, int target_base) {
+        BigInteger dec_in = new BigInteger(num_in_str);
+        StringBuilder base_out = new StringBuilder("");
+        BigInteger ostatok;
+        while (dec_in.compareTo(BigInteger.ZERO) > 0) {
+            ostatok = dec_in.mod(BigInteger.valueOf(target_base));
+            dec_in = dec_in.subtract(ostatok).divide(BigInteger.valueOf(target_base));
+            base_out.append(CHARE_BASE.charAt(ostatok.intValue()));
         }
-        return dec_out.toString();
+        return base_out.reverse().toString();
     }
 
-
-
+    public static String ToDecimalDrob(String num_in_str, int source_base) {
+        Double dec_out = 0.0;
+        int i = num_in_str.length();
+        for (Character ch : new StringBuilder(num_in_str).reverse().toString().toCharArray()) {
+            dec_out = dec_out + CHARE_BASE.toString().indexOf(ch) * Math.pow(source_base, -i);
+            i--;
+            System.out.println("Проход" + i + " -> число " + ch + " Результат ->" + dec_out);
+        }
+        BigDecimal big_dec_out = new BigDecimal(dec_out);
+        return new String(String.valueOf(big_dec_out.setScale(5, RoundingMode.HALF_UP)));
+    }
 
 
     public static String ToDecimal(String num_in_str, int source_base) {
